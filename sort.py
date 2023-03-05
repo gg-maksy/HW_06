@@ -30,12 +30,20 @@ def get_folders(path: Path):
 
 
 def remove_empty_folders(path: Path):
+    count_ch = 0
     for i in path.iterdir():
-        if i != create:
+        if i != create and i.is_dir():
             try:
                 i.rmdir()
             except OSError:
                 remove_empty_folders(i)
+
+    for ch in path.iterdir():
+        count_ch += 1
+
+    if count_ch > 1:
+        remove_empty_folders(path)
+
         
 
 get_folders(path)
