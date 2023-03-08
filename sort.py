@@ -13,7 +13,30 @@ except IndexError:
 
 
 def get_files(path: Path, file: Path):
-    file.replace(path / item.name)
+
+    file.replace(path / transliterate(file.name))
+    
+
+def get_key(dictation: dict, file_suffix) -> dict.keys:
+
+    for key, val in FORMATS.items():
+            for i in val:
+                if file_suffix in i:
+                    return key
+
+def sort_files(path: Path, file_name: Path):
+
+    key = get_key(FORMATS, file_name.suffix)
+    
+    if key:
+        fold_i = Path(f'{path}\{key}')
+        fold_i.mkdir(exist_ok=True)
+        file.replace(fold_i / file_name.name)
+    else:
+        fold_n = Path(f'{path}\\another')
+        fold_n.mkdir(exist_ok=True)
+        file.replace(fold_n / file_name.name)
+
 
 
 for item in path.glob('**/*.*'):
@@ -38,15 +61,6 @@ with open('format.txt', 'r') as fd:
         line = fd.readline()
 
 for file in path.iterdir():
-    for k, v in FORMATS.items():
-        for i in v:
-            if file.suffix in i:
-                fold_i = Path(f'{path}\{k}')
-                fold_i.mkdir(exist_ok=True)
-                file.replace(fold_i / file.name)
-            else:
-                fold_a = Path(f'{path}\\another')
-                fold_a.mkdir(exist_ok=True)
-                file.replace(fold_a / file.name)
+    sort_files(path, file)
 
 
